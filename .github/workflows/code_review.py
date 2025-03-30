@@ -1,5 +1,6 @@
 import os
 import requests
+import subprocess
 import google.generativeai as genai
 from github import Github
 
@@ -26,8 +27,12 @@ github_client = Github(GITHUB_TOKEN)
 repo = github_client.get_repo(REPO_NAME)
 pr = repo.get_pull(int(PR_NUMBER))
 
-# Get changed files
-changed_files = os.popen("git diff --name-only HEAD^1 HEAD").read().strip().split("\n")
+try:
+    result = subprocess.run(["git", "diff", "--name-only", "origin/main"], capture_output=True, text=True, check=True)
+    changed_files = result.stdout.strip().split("\n")
+except subprocess.CalledProcessError as e:
+    print("Error getting changed files:", e)
+    changed_files = []
 
 for file in changed_files:
     if not file.endswith(('.py', '.js', '.ts', '.jsx', '.tsx')):  # Limit to code files
