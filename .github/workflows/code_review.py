@@ -51,6 +51,8 @@ for file in changed_files:
 
         response = model.generate_content(prompt)
 
+        print(response.text,"jjjjj")
+
         if response and response.text:
             review_comment = f"**Code Review Suggestion for `{file}`:**\n\n{response.text}"
             pr.create_issue_comment(review_comment)
