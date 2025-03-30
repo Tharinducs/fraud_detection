@@ -1,5 +1,6 @@
 import os
 import requests
+import subprocess
 import google.generativeai as genai
 from github import Github
 
@@ -7,7 +8,15 @@ from github import Github
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 REPO_NAME = os.getenv("GITHUB_REPOSITORY")
-PR_NUMBER = os.getenv("GITHUB_EVENT_NUMBER")
+
+GITHUB_REF = os.getenv("GITHUB_REF", "")
+if "pull" in GITHUB_REF:
+    PR_NUMBER = GITHUB_REF.split("/")[2]  # Extract PR number
+else:
+    PR_NUMBER = None
+
+if not PR_NUMBER:
+    raise ValueError("Pull Request number could not be determined.")
 
 # Authenticate with Gemini API
 genai.configure(api_key=GEMINI_API_KEY)
@@ -18,8 +27,12 @@ github_client = Github(GITHUB_TOKEN)
 repo = github_client.get_repo(REPO_NAME)
 pr = repo.get_pull(int(PR_NUMBER))
 
-# Get changed files
-changed_files = os.popen("git diff --name-only HEAD^1 HEAD").read().strip().split("\n")
+try:
+    result = subprocess.run(["git", "diff", "--name-only", "origin/main"], capture_output=True, text=True, check=True)
+    changed_files = result.stdout.strip().split("\n")
+except subprocess.CalledProcessError as e:
+    print("Error getting changed files:", e)
+    changed_files = []
 
 for file in changed_files:
     if not file.endswith(('.py', '.js', '.ts', '.jsx', '.tsx')):  # Limit to code files
@@ -37,6 +50,8 @@ for file in changed_files:
         """
 
         response = model.generate_content(prompt)
+
+        print(response.text,"jjjjj")
 
         if response and response.text:
             review_comment = f"**Code Review Suggestion for `{file}`:**\n\n{response.text}"

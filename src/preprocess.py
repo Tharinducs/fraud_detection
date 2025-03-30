@@ -14,4 +14,4 @@ def clean_text(text):
     return text
 
 # Test the function
-print(clean_text("Cleans text by removing special characters and stopwords."))
+print(clean_text("Cleans text by removing special characters and stopwords is."))
