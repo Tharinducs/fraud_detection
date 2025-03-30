@@ -7,7 +7,7 @@ from github import Github
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 REPO_NAME = os.getenv("GITHUB_REPOSITORY")
-PR_NUMBER = os.getenv("GITHUB_EVENT_NUMBER")
+PR_NUMBER = os.getenv("GITHUB_REF").split("/")[-1]
 
 # Authenticate with Gemini API
 genai.configure(api_key=GEMINI_API_KEY)
