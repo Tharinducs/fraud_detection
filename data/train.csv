@@ -1,0 +1,7 @@
+text,label
+"I love this product! It's amazing.",Positive
+"This is the best experience I've ever had.",Positive
+"I hate this! It's the worst.",Negative
+"Absolutely terrible, I regret buying this.",Negative
+"So good, I highly recommend it!",Positive
+"Awful experience, I will never use this again.",Negative
