@@ -1,3 +1,4 @@
+import logging
 import config
 import re
 import nltk
@@ -8,7 +9,7 @@ PUNCTUATION_REGEX = re.compile(r"[^\w\s]")
 NUMBERS_REGEX = re.compile(r"\d+")
 
 def download_nltk_resources():
-    """Download required NLTK resources"""
+    """Download required NLTK resources (punkt and stopwords) if they are not already present."""
     try:
         # First try to find the resources
         nltk.data.find('tokenizers/punkt_tab')
@@ -21,15 +22,12 @@ def download_nltk_resources():
             nltk.download('stopwords', quiet=True)
             print("NLTK resources downloaded successfully")
         except Exception as e:
-            print(f"Error downloading NLTK resources: {e}")
-            print("Please try running these commands manually in Python:")
-            print(">>> import nltk")
-            print(">>> nltk.download('punkt')")
-            print(">>> nltk.download('stopwords')")
-            raise
+            logging.error(f"Error downloading NLTK resources: {e}")
+            logging.warning("Please try running these commands manually in Python:\n>>> import nltk\n>>> nltk.download('punkt')\n>>> nltk.download('stopwords')")
 
 # Download required NLTK resources
-download_nltk_resources()
+if config.DOWNLOAD_NLTK_RESOURCES:
+    download_nltk_resources()
 
 STOPWORDS = set(stopwords.words("english"))
 
@@ -37,6 +35,9 @@ def clean_text(text: str) -> str:
     """Cleans text by removing special characters and stopwords."""
     if not isinstance(text, str):
         raise TypeError("Input must be a string")
+    
+    if not text:  # Handle None or empty string
+        return ""
     
     text = text.lower()
     text = PUNCTUATION_REGEX.sub("", text)
