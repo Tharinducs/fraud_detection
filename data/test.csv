@@ -1,7 +1,11 @@
-text,label
-"This is fantastic! I really enjoy using it.",Positive
-"I will never buy this again, horrible quality.",Negative
-"Best product ever! Worth every penny.",Positive
-"This is a waste of money, totally disappointed.",Negative
-"Pretty decent, but could be better.",Positive
-"Terrible service, very bad experience.",Negative
+Transaction_Description,Fraudulent
+"Regular monthly subscription payment",0
+"High-value wire transfer to an unknown account",1
+"Purchase at local supermarket",0
+"Multiple failed login attempts detected",1
+"Small grocery store purchase",0
+"Large cash withdrawal from ATM in another city",1
+"Bill payment to electricity provider",0
+"Suspicious online transaction flagged",1
+"Salary deposit from employer",0
+"You won a lottery",1
